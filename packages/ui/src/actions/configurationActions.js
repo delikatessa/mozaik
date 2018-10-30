@@ -20,7 +20,9 @@ export const fetchConfiguration = () => {
     return dispatch => {
         dispatch({ type: FETCH_CONFIGURATION })
 
-        return fetch('/config')
+        const baseUrl = process.env.REACT_APP_BASE_URL || ''
+
+        return fetch(baseUrl + '/config')
             .then(res => {
                 if (res.status !== 200) {
                     return Promise.reject(
