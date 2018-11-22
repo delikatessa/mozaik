@@ -2,6 +2,11 @@ import { connect } from 'react-redux'
 import WidgetWrapper from '../components/widget/WidgetWrapper'
 
 const mapStateToProps = (state, { subscriptionId: id }) => {
+    const {
+        themes: { current: themeId },
+        dashboards: { startDate, endDate },
+    } = state
+
     let apiData
     let apiError
 
@@ -16,9 +21,11 @@ const mapStateToProps = (state, { subscriptionId: id }) => {
 
     return {
         // not used but needed to force refresh of context
-        themeId: state.themes.current,
+        themeId,
         apiData,
         apiError,
+        startDate,
+        endDate,
     }
 }
 

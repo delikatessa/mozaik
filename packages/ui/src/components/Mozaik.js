@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import momentPropTypes from 'react-moment-proptypes'
 import styled, { injectGlobal } from 'styled-components'
 
 import Dashboard, { DashboardPropType } from './dashboard/Dashboard'
@@ -70,6 +71,9 @@ export default class Mozaik extends Component {
         themes: PropTypes.object.isRequired,
         currentTheme: PropTypes.string.isRequired,
         setTheme: PropTypes.func.isRequired,
+        startDate: momentPropTypes.momentObj,
+        endDate: momentPropTypes.momentObj,
+        setDateRange: PropTypes.func.isRequired,
     }
 
     constructor(props) {
@@ -77,7 +81,13 @@ export default class Mozaik extends Component {
 
         this.toggleSettings = this.toggleSettings.bind(this)
 
-        this.state = { settingsOpened: false }
+        this.state = {
+            settingsOpened: false,
+        }
+    }
+
+    setDateRange = dateRange => {
+        this.props.setDateRange(dateRange)
     }
 
     toggleSettings() {
@@ -103,6 +113,8 @@ export default class Mozaik extends Component {
             themes,
             currentTheme,
             setTheme,
+            startDate,
+            endDate,
         } = this.props
 
         const { settingsOpened } = this.state
@@ -114,6 +126,8 @@ export default class Mozaik extends Component {
                     dashboard={dashboards[currentDashboard]}
                     dashboardIndex={currentDashboard}
                     registry={WidgetsRegistry}
+                    startDate={startDate}
+                    endDate={endDate}
                 />
             )
         }
@@ -130,6 +144,9 @@ export default class Mozaik extends Component {
                     pause={pause}
                     previous={previous}
                     next={next}
+                    setDateRange={this.setDateRange}
+                    startDate={startDate}
+                    endDate={endDate}
                 />
                 {content}
                 <Settings

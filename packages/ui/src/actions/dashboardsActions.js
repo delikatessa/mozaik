@@ -6,6 +6,7 @@ export const SET_DASHBOARDS = 'SET_DASHBOARDS'
 export const SET_CURRENT_DASHBOARD = 'SET_CURRENT_DASHBOARD'
 export const DASHBOARDS_PLAY = 'DASHBOARDS_PLAY'
 export const DASHBOARDS_PAUSE = 'DASHBOARDS_PAUSE'
+export const SET_DATE_RANGE = 'SET_DATE_RANGE'
 
 const ignoreProps = ['extension', 'widget', 'x', 'y', 'columns', 'rows']
 
@@ -15,7 +16,10 @@ const SECOND = 1000
 
 export const setDashboards = dashboards => {
     return (dispatch, getState) => {
-        const { api } = getState()
+        const {
+            api,
+            dashboards: { startDate, endDate },
+        } = getState()
 
         const currentSubscriptionsIds = api
             .get('subscriptions')
@@ -29,7 +33,7 @@ export const setDashboards = dashboards => {
                     const component = Registry.getComponent(w.extension, w.widget)
 
                     if (typeof component.getApiRequest === 'function') {
-                        const childProps = _.omit(w, ignoreProps)
+                        const childProps = { ..._.omit(w, ignoreProps), startDate, endDate }
                         const subscription = component.getApiRequest(childProps)
 
                         if (!_.isObject(subscription) || !subscription.id) {
@@ -132,4 +136,20 @@ export const pause = () => {
     clearTimeout(timer)
 
     return { type: DASHBOARDS_PAUSE }
+}
+
+export const setDateRange = ({ startDate, endDate }) => {
+    return (dispatch, getState) => {
+        dispatch({
+            type: SET_DATE_RANGE,
+            startDate,
+            endDate,
+        })
+        const {
+            configuration: {
+                configuration: { dashboards },
+            },
+        } = getState()
+        dispatch(setDashboards(dashboards))
+    }
 }

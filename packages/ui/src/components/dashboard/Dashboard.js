@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import momentPropTypes from 'react-moment-proptypes'
 import _ from 'lodash'
 import { TransitionMotion, spring } from 'react-motion'
 import styled from 'styled-components'
@@ -24,6 +25,8 @@ export const DashboardPropType = PropTypes.shape({
             y: PropTypes.number.isRequired,
             columns: PropTypes.number.isRequired,
             rows: PropTypes.number.isRequired,
+            startDate: momentPropTypes.momentObj,
+            endDate: momentPropTypes.momentObj,
         })
     ).isRequired,
 })
@@ -49,6 +52,8 @@ export default class Dashboard extends Component {
         registry: PropTypes.shape({
             getComponent: PropTypes.func.isRequired,
         }).isRequired,
+        startDate: momentPropTypes.momentObj,
+        endDate: momentPropTypes.momentObj,
     }
 
     render() {
@@ -56,6 +61,8 @@ export default class Dashboard extends Component {
             dashboard: { columns, rows, widgets: _widgets },
             dashboardIndex,
             registry,
+            startDate,
+            endDate,
         } = this.props
 
         const widgets = _widgets.map(w => {
@@ -66,6 +73,8 @@ export default class Dashboard extends Component {
                 height: `${(w.rows / rows) * 100}%`,
                 left: `${(w.x / columns) * 100}%`,
                 top: `${(w.y / rows) * 100}%`,
+                startDate: startDate,
+                endDate: endDate,
             }
         })
 

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import momentPropTypes from 'react-moment-proptypes'
 import _ from 'lodash'
 import UnknowWidgetTypeError from './UnknowWidgetTypeError'
 import shallowEqual from '../../lib/shallowEqual'
@@ -19,6 +20,8 @@ class WidgetWrapper extends Component {
         registry: PropTypes.shape({
             getComponent: PropTypes.func.isRequired,
         }).isRequired,
+        startDate: momentPropTypes.momentObj,
+        endDate: momentPropTypes.momentObj,
     }
 
     shouldComponentUpdate(nextProps) {

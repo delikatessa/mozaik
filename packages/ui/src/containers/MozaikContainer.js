@@ -1,13 +1,13 @@
 import { connect } from 'react-redux'
 import Mozaik from '../components/Mozaik'
 import { fetchConfiguration } from '../actions/configurationActions'
-import { play, pause, previous, next } from '../actions/dashboardsActions'
+import { play, pause, previous, next, setDateRange } from '../actions/dashboardsActions'
 import { setTheme } from '../actions/themesActions'
 
 const mapStateToProps = state => {
     const {
         configuration,
-        dashboards: { dashboards, current, isPlaying },
+        dashboards: { dashboards, current, isPlaying, startDate, endDate },
         themes: { themes, current: currentTheme },
     } = state
 
@@ -18,31 +18,20 @@ const mapStateToProps = state => {
         isPlaying,
         themes,
         currentTheme,
+        startDate,
+        endDate,
     }
 }
 
-const mapDispatchToProps = dispatch => ({
-    fetchConfiguration: () => {
-        dispatch(fetchConfiguration())
-    },
-    play: () => {
-        dispatch(play())
-    },
-    pause: () => {
-        dispatch(pause())
-    },
-    previous: () => {
-        dispatch(pause())
-        dispatch(previous())
-    },
-    next: () => {
-        dispatch(pause())
-        dispatch(next())
-    },
-    setTheme: theme => {
-        dispatch(setTheme(theme))
-    },
-})
+const mapDispatchToProps = {
+    fetchConfiguration,
+    play,
+    pause,
+    previous,
+    next,
+    setTheme: theme => setTheme(theme),
+    setDateRange: dates => setDateRange(dates),
+}
 
 export default connect(
     mapStateToProps,

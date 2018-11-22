@@ -3,6 +3,7 @@ import {
     SET_CURRENT_DASHBOARD,
     DASHBOARDS_PLAY,
     DASHBOARDS_PAUSE,
+    SET_DATE_RANGE,
 } from '../actions/dashboardsActions'
 
 export default function dashboards(
@@ -10,6 +11,8 @@ export default function dashboards(
         dashboards: [],
         current: 0,
         isPlaying: false,
+        startDate: null,
+        endDate: null,
     },
     action
 ) {
@@ -36,6 +39,13 @@ export default function dashboards(
             return {
                 ...state,
                 isPlaying: false,
+            }
+
+        case SET_DATE_RANGE:
+            return {
+                ...state,
+                startDate: action.startDate,
+                endDate: action.endDate,
             }
 
         default:

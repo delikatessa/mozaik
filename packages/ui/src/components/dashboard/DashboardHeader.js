@@ -1,11 +1,16 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import momentPropTypes from 'react-moment-proptypes'
 import styled, { withTheme } from 'styled-components'
 import { NavButton } from 'react-svg-buttons'
 import { DashboardPropType } from './Dashboard'
 import DashboardTitle from './DashboardTitle'
 import DashboardPlayer from './DashboardPlayer'
 import typography from '../../theming/typography'
+
+import 'react-dates/initialize'
+import 'react-dates/lib/css/_datepicker.css'
+import { DateRangePicker } from 'react-dates'
 
 const Header = styled.header`
     position: absolute;
@@ -16,7 +21,7 @@ const Header = styled.header`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    overflow: hidden;
+    overflow: visible;
     height: ${props => props.theme.dashboard.header.height};
     padding: ${props => props.theme.dashboard.header.padding};
     background: ${props => props.theme.dashboard.header.background};
@@ -40,6 +45,15 @@ const Toogle = styled.div`
 `
 
 class DashboardHeader extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            focusedInput: null,
+            startDate: null,
+            endDate: null,
+        }
+    }
+
     static propTypes = {
         settingsOpened: PropTypes.bool.isRequired,
         toggleSettings: PropTypes.func.isRequired,
@@ -51,6 +65,9 @@ class DashboardHeader extends Component {
         next: PropTypes.func.isRequired,
         pause: PropTypes.func.isRequired,
         theme: PropTypes.object.isRequired,
+        setDateRange: PropTypes.func.isRequired,
+        startDate: momentPropTypes.momentObj,
+        endDate: momentPropTypes.momentObj,
     }
 
     render() {
@@ -65,6 +82,7 @@ class DashboardHeader extends Component {
             settingsOpened,
             toggleSettings,
             theme,
+            setDateRange,
         } = this.props
 
         let title = 'Mozaïk'
@@ -80,18 +98,34 @@ class DashboardHeader extends Component {
                 <TitleWrapper>
                     <DashboardTitle currentDashboardIndex={currentDashboardIndex} title={title} />
                 </TitleWrapper>
-                {dashboards.length &&
-                    dashboards.length > 1 && (
-                        <DashboardPlayer
-                            dashboards={dashboards}
-                            currentDashboardIndex={currentDashboardIndex}
-                            isPlaying={isPlaying}
-                            play={play}
-                            pause={pause}
-                            previous={previous}
-                            next={next}
-                        />
-                    )}
+                <DateRangePicker
+                    startDateId="startDate"
+                    endDateId="endDate"
+                    startDate={this.state.startDate}
+                    endDate={this.state.endDate}
+                    onDatesChange={({ startDate, endDate }) => {
+                        this.setState({ startDate, endDate })
+                        setDateRange({ startDate, endDate })
+                    }}
+                    focusedInput={this.state.focusedInput}
+                    onFocusChange={focusedInput => {
+                        this.setState({ focusedInput })
+                    }}
+                    showClearDates={true}
+                    noBorder={true}
+                    isOutsideRange={() => false}
+                />
+                {dashboards.length && dashboards.length > 1 && (
+                    <DashboardPlayer
+                        dashboards={dashboards}
+                        currentDashboardIndex={currentDashboardIndex}
+                        isPlaying={isPlaying}
+                        play={play}
+                        pause={pause}
+                        previous={previous}
+                        next={next}
+                    />
+                )}
                 <Toogle onClick={toggleSettings} className="Dashboard__Header__Toggle">
                     <NavButton
                         direction="down"

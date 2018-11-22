@@ -97,6 +97,9 @@ exports.start = _app => {
         client.on('disconnect', () => {
             bus.removeClient(client.id)
         })
+        // client.on('api.updateDates', ({startDate, endDate}) => {
+        //     bus.resubscribe(client.id, subscription)
+        // })
     })
 
     const port = process.env.PORT || configuration.port
